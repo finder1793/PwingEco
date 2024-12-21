@@ -16,7 +16,7 @@
     <scope>provided</scope>
 </dependency>
 
-getting-started.md
+
 Gradle
 
 repositories {
@@ -76,7 +76,7 @@ economyManager.withdraw(player.getUniqueId(), currency, amount);
 
 PwingEco provides native Skript support for easy scripting. Available syntaxes:
 
-```skript
+skript
 # Get player balance
 [pwingeco] balance of %player% [in %string%]
 %player%'s [pwingeco] balance [in %string%]

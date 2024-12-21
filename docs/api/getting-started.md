@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     compileOnly 'com.pwing:pwingeco:1.0.0'
-}
+}```
 
 Basic Usage
 Getting the Plugin Instance

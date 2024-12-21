@@ -1,0 +1,19 @@
+currencies:
+  dollars:
+    name: "Dollars"
+    symbol: "$"
+    primary: true
+    item-representation:
+      material: PAPER
+      display-name: "&aOne Dollar Bill"
+      lore:
+        - "&7Official currency of the server"
+  gems:
+    name: "Gems"
+    symbol: "◊"
+    primary: false
+    item-representation:
+      material: EMERALD
+      display-name: "&bGem"
+      lore:
+        - "&7A precious gem currency"

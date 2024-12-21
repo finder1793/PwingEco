@@ -1,0 +1,30 @@
+name: PwingEco
+version: '${version}'
+main: com.pwing.pwingeco.PwingEco
+api-version: '1.20'
+authors: [YourName]
+description: A Minecraft economy plugin
+softdepend: [PlaceholderAPI]
+
+commands:
+  currencyadmin:
+    description: Admin commands for managing currencies
+    usage: /<command> <subcommand> [args]
+    permission: admin.pwing.currency
+  balance:
+    description: Check your currency balance
+    aliases: [bal]
+    usage: /<command> [currency]
+  pay:
+    description: Pay another player
+    usage: /<command> <player> <amount> <currency>
+  balancetop:
+    description: View top balances
+    aliases: [baltop]
+    usage: /<command> [currency]
+permissions:
+  admin.pwing.currency:
+    description: Allows access to currency admin commands
+    default: op
+
+softdepend: [PlaceholderAPI]

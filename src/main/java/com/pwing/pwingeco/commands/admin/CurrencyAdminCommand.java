@@ -1,131 +1,118 @@
 package com.pwing.pwingeco.commands.admin;
 
 import com.pwing.pwingeco.PwingEco;
-import com.pwing.pwingeco.commands.BaseCommand;
 import com.pwing.pwingeco.currency.Currency;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Optional;
 
-public class CurrencyAdminCommand extends BaseCommand {
+public class CurrencyAdminCommand implements CommandExecutor {
+    private final PwingEco plugin;
 
     public CurrencyAdminCommand(PwingEco plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("admin.pwing.currency")) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
-            return true;
-        }
-
         if (args.length < 1) {
-            sendHelp(sender);
+            sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin <create|edit|remove> <name> [symbol] [primary]");
             return true;
         }
 
-        switch (args[0].toLowerCase()) {
+        String action = args[0].toLowerCase();
+        switch (action) {
             case "create":
-                if (args.length < 3) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin create <name> <symbol> [primary]");
+                if (args.length < 4) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin create <name> <symbol> <primary>");
                     return true;
                 }
-                createCurrency(sender, args);
+                handleCreate(sender, args[1], args[2], Boolean.parseBoolean(args[3]));
                 break;
-            case "delete":
-                if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin delete <name>");
-                    return true;
-                }
-                deleteCurrency(sender, args[1]);
-                break;
-            case "setitem":
+            case "edit":
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+                    sender.sendMessage(ChatColor.RED + "Only players can edit currencies!");
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin setitem <currency>");
+                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin edit <name>");
                     return true;
                 }
-                setCurrencyItem(sender, args[1]);
+                handleEdit(sender, args[1]);
+                break;
+            case "remove":
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin remove <name>");
+                    return true;
+                }
+                handleRemove(sender, args[1]);
                 break;
             default:
-                sendHelp(sender);
+                sender.sendMessage(ChatColor.RED + "Unknown action: " + action);
                 break;
         }
         return true;
     }
 
-    private void createCurrency(CommandSender sender, String[] args) {
-        String name = args[1];
-        String symbol = args[2];
-        boolean primary = args.length > 3 && Boolean.parseBoolean(args[3]);
-        
-        Currency currency = new Currency(name, symbol, primary, null);
-        plugin.getCurrencyManager().registerCurrency(currency);
-        plugin.getCurrencyConfiguration().saveCurrency(currency);
-        
-        sender.sendMessage(ChatColor.GREEN + "Currency " + name + " created successfully!");
-    }
-
-    private void deleteCurrency(CommandSender sender, String name) {
-        plugin.getCurrencyManager().removeCurrency(name);
-        plugin.getConfig().set("currencies." + name.toLowerCase(), null);
-        plugin.saveConfig();
-        
-        sender.sendMessage(ChatColor.GREEN + "Currency " + name + " deleted successfully!");
-    }
-
-    private void setCurrencyItem(CommandSender sender, String currencyName) {
-        Player player = (Player) sender;
-        ItemStack hand = player.getInventory().getItemInMainHand();
-        
-        if (hand == null || hand.getType().isAir()) {
-            sender.sendMessage(ChatColor.RED + "You must hold an item in your main hand!");
+    private void handleCreate(CommandSender sender, String name, String symbol, boolean primary) {
+        Optional<Currency> existingCurrency = plugin.getCurrencyManager().getCurrency(name);
+        if (existingCurrency.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "A currency with that name already exists!");
             return;
         }
 
-        plugin.getCurrencyManager().getCurrency(currencyName).ifPresentOrElse(
-            currency -> {
-                Currency updatedCurrency = new Currency(
-                    currency.getName(),
-                    currency.getSymbol(),
-                    currency.isPrimary(),
-                    hand.clone()
-                );
-                plugin.getCurrencyManager().registerCurrency(updatedCurrency);
-                plugin.getCurrencyConfiguration().saveCurrency(updatedCurrency);
-                sender.sendMessage(ChatColor.GREEN + "Currency item updated successfully!");
-            },
-            () -> sender.sendMessage(ChatColor.RED + "Currency not found!")
+        Currency currency = new Currency(name, symbol, primary, null, true, new ArrayList<>());
+        plugin.getCurrencyManager().registerCurrency(currency);
+        plugin.getCurrencyConfiguration().saveCurrency(currency);
+        sender.sendMessage(ChatColor.GREEN + "Created new currency: " + name);
+    }
+
+    private void handleEdit(CommandSender sender, String name) {
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(name);
+        if (!currencyOpt.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "Currency not found: " + name);
+            return;
+        }
+
+        Player player = (Player) sender;
+        ItemStack hand = player.getInventory().getItemInMainHand();
+        if (hand == null || hand.getType().isAir()) {
+            sender.sendMessage(ChatColor.RED + "You must hold an item to set as currency representation!");
+            return;
+        }
+
+        Currency currency = currencyOpt.get();
+        Currency updatedCurrency = new Currency(
+            currency.getName(),
+            currency.getSymbol(),
+            currency.isPrimary(),
+            hand.clone(),
+            true,
+            new ArrayList<>()
         );
+
+        plugin.getCurrencyManager().registerCurrency(updatedCurrency);
+        plugin.getCurrencyConfiguration().saveCurrency(updatedCurrency);
+        sender.sendMessage(ChatColor.GREEN + "Updated currency: " + name);
     }
 
-    private void sendHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GOLD + "=== Currency Admin Commands ===");
-        sender.sendMessage(ChatColor.YELLOW + "/currencyadmin create <name> <symbol> [primary] - Create a new currency");
-        sender.sendMessage(ChatColor.YELLOW + "/currencyadmin delete <name> - Delete a currency");
-        sender.sendMessage(ChatColor.YELLOW + "/currencyadmin setitem <currency> - Set currency item to held item");
-    }
+    private void handleRemove(CommandSender sender, String name) {
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(name);
+        if (!currencyOpt.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "Currency not found: " + name);
+            return;
+        }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            return Arrays.asList("create", "delete", "setitem");
-        }
-        if (args.length == 2 && (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("setitem"))) {
-            return plugin.getCurrencyManager().getAllCurrencies().stream()
-                .map(Currency::getName)
-                .collect(Collectors.toList());
-        }
-        return null;
+        Currency currency = currencyOpt.get();
+        plugin.getCurrencyManager().unregisterCurrency(currency);
+        plugin.getConfig().set("currencies." + name.toLowerCase(), null);
+        plugin.saveConfig();
+        sender.sendMessage(ChatColor.GREEN + "Removed currency: " + name);
     }
 }

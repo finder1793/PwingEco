@@ -1,12 +1,57 @@
 package com.pwing.pwingeco.manager;
 
+import com.pwing.pwingeco.PwingEco;
 import com.pwing.pwingeco.currency.Currency;
+import com.pwing.pwingeco.storage.MySQLStorage;
+import com.pwing.pwingeco.storage.YAMLStorage;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class EconomyManager {
+    private final PwingEco plugin;
     private final Map<String, Map<UUID, Double>> balances = new HashMap<>();
+    private final YAMLStorage yamlStorage;
+    private final MySQLStorage mysqlStorage;
+    private final boolean useMySQL;
+
+    public EconomyManager(PwingEco plugin) {
+        this.plugin = plugin;
+        this.useMySQL = plugin.getConfig().getString("storage.type", "YAML").equalsIgnoreCase("MYSQL");
+        this.yamlStorage = useMySQL ? null : new YAMLStorage(plugin);
+        this.mysqlStorage = useMySQL ? new MySQLStorage(plugin) : null;
+        
+        Bukkit.getOnlinePlayers().forEach(this::loadPlayerData);
+    }
+
+    public void loadPlayerData(Player player) {
+        Map<String, Double> playerBalances = useMySQL 
+            ? mysqlStorage.loadPlayerData(player.getUniqueId())
+            : yamlStorage.loadPlayerData(player.getUniqueId());
+            
+        playerBalances.forEach((currency, balance) -> 
+            balances.computeIfAbsent(currency, k -> new HashMap<>())
+                    .put(player.getUniqueId(), balance));
+    }
+
+    public void savePlayerData(UUID uuid) {
+        Map<String, Double> playerBalances = new HashMap<>();
+        balances.forEach((currency, balanceMap) -> {
+            Double balance = balanceMap.get(uuid);
+            if (balance != null) {
+                playerBalances.put(currency, balance);
+            }
+        });
+
+        if (useMySQL) {
+            mysqlStorage.savePlayerData(uuid, playerBalances);
+        } else {
+            yamlStorage.savePlayerData(uuid, playerBalances);
+        }
+    }
 
     public double getBalance(UUID player, Currency currency) {
         return balances

@@ -37,7 +37,7 @@ public class CurrencyConfiguration {
             ConfigurationSection itemSection = currencySection.getConfigurationSection("item-representation");
             ItemStack itemStack = createItemRepresentation(itemSection);
 
-            Currency currency = new Currency(name, symbol, primary, itemStack);
+            Currency currency = new Currency(name, symbol, primary, itemStack, true, new ArrayList<>());
             plugin.getCurrencyManager().registerCurrency(currency);
         }
     }

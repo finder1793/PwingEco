@@ -10,6 +10,7 @@ import com.pwing.pwingeco.commands.player.PayCommand;
 import com.pwing.pwingeco.placeholder.EconomyPlaceholders;
 import com.pwing.pwingeco.vault.VaultHook;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.pwing.pwingeco.listeners.PlayerDataListener;
 
 public class PwingEco extends JavaPlugin {
     private CurrencyManager currencyManager;
@@ -21,7 +22,8 @@ public class PwingEco extends JavaPlugin {
     public void onEnable() {
         this.currencyManager = new CurrencyManager();
         this.currencyConfiguration = new CurrencyConfiguration(this);
-        this.economyManager = new EconomyManager();
+        this.economyManager = new EconomyManager(this);
+
         
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             this.vaultHook = new VaultHook(this);
@@ -39,6 +41,7 @@ public class PwingEco extends JavaPlugin {
         getCommand("pay").setExecutor(new PayCommand(this));
         getCommand("balancetop").setExecutor(new BalanceTopCommand(this));
         getLogger().info("PwingEco has been enabled!");
+        getServer().getPluginManager().registerEvents(new PlayerDataListener(this), this);
     }
 
     @Override

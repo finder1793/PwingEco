@@ -5,34 +5,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Collection;
+import java.util.Collections;
 
 public class CurrencyManager {
     private final Map<String, Currency> currencies = new HashMap<>();
-    private Currency primaryCurrency;
-    
+
     public void registerCurrency(Currency currency) {
         currencies.put(currency.getName().toLowerCase(), currency);
-        if (currency.isPrimary()) {
-            primaryCurrency = currency;
-        }
     }
-    
-    public void removeCurrency(String name) {
-        Currency removed = currencies.remove(name.toLowerCase());
-        if (removed != null && removed.isPrimary()) {
-            primaryCurrency = null;
-        }
-    }
-    
+
     public Optional<Currency> getCurrency(String name) {
         return Optional.ofNullable(currencies.get(name.toLowerCase()));
     }
-    
+
+    public void unregisterCurrency(Currency currency) {
+        currencies.remove(currency.getName().toLowerCase());
+    }
+
     public Currency getPrimaryCurrency() {
-        return primaryCurrency;
+        return currencies.values().stream()
+            .filter(Currency::isPrimary)
+            .findFirst()
+            .orElse(null);
     }
 
     public Collection<Currency> getAllCurrencies() {
-        return currencies.values();
+        return Collections.unmodifiableCollection(currencies.values());
     }
 }

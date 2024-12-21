@@ -2,6 +2,7 @@ package com.pwing.pwingeco.commands.admin;
 
 import com.pwing.pwingeco.PwingEco;
 import com.pwing.pwingeco.currency.Currency;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +23,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin <create|edit|remove> <name> [symbol] [primary]");
+            sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin <create|edit|remove|give|take> <name> [args...]");
             return true;
         }
 
@@ -52,6 +53,20 @@ public class CurrencyAdminCommand implements CommandExecutor {
                     return true;
                 }
                 handleRemove(sender, args[1]);
+                break;
+            case "give":
+                if (args.length < 4) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin give <player> <amount> <currency>");
+                    return true;
+                }
+                handleGive(sender, args[1], Double.parseDouble(args[2]), args[3]);
+                break;
+            case "take":
+                if (args.length < 4) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /currencyadmin take <player> <amount> <currency>");
+                    return true;
+                }
+                handleTake(sender, args[1], Double.parseDouble(args[2]), args[3]);
                 break;
             default:
                 sender.sendMessage(ChatColor.RED + "Unknown action: " + action);
@@ -114,5 +129,39 @@ public class CurrencyAdminCommand implements CommandExecutor {
         plugin.getConfig().set("currencies." + name.toLowerCase(), null);
         plugin.saveConfig();
         sender.sendMessage(ChatColor.GREEN + "Removed currency: " + name);
+    }
+
+    private void handleGive(CommandSender sender, String playerName, double amount, String currencyName) {
+        Player target = Bukkit.getPlayer(playerName);
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found!");
+            return;
+        }
+
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
+        if (!currencyOpt.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "Currency not found!");
+            return;
+        }
+
+        plugin.getEconomyManager().depositPlayer(target.getUniqueId(), currencyOpt.get(), amount);
+        sender.sendMessage(ChatColor.GREEN + "Gave " + amount + currencyOpt.get().getSymbol() + " to " + target.getName());
+    }
+
+    private void handleTake(CommandSender sender, String playerName, double amount, String currencyName) {
+        Player target = Bukkit.getPlayer(playerName);
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found!");
+            return;
+        }
+
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
+        if (!currencyOpt.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "Currency not found!");
+            return;
+        }
+
+        plugin.getEconomyManager().withdrawPlayer(target.getUniqueId(), currencyOpt.get(), amount);
+        sender.sendMessage(ChatColor.GREEN + "Took " + amount + currencyOpt.get().getSymbol() + " from " + target.getName());
     }
 }

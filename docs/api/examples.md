@@ -104,4 +104,8 @@ public class CustomShop implements Listener {
         }
     }
 }
-
+//Skript integration
+command /balance [<text>]:
+    trigger:
+        set {_bal} to player's pwingeco balance in arg-1
+        message "Your balance: %{_bal}%"

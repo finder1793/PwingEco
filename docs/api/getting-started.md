@@ -71,3 +71,16 @@ economyManager.deposit(player.getUniqueId(), currency, amount);
 // Remove funds
 economyManager.withdraw(player.getUniqueId(), currency, amount);
 
+
+## Skript Integration
+
+PwingEco provides native Skript support for easy scripting. Available syntaxes:
+
+```skript
+# Get player balance
+[pwingeco] balance of %player% [in %string%]
+%player%'s [pwingeco] balance [in %string%]
+
+# Give/add money
+give %number% [of] [pwingeco] %string% to %player%
+add %number% [of] [pwingeco] %string% to %player%'s balance

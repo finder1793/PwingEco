@@ -1,4 +1,3 @@
-
 # PwingEco Documentation
 
 PwingEco is a powerful multi-currency economy plugin that supports both physical and virtual currencies.
@@ -9,6 +8,17 @@ PwingEco is a powerful multi-currency economy plugin that supports both physical
 - World-specific currencies
 - Vault integration
 - PlaceholderAPI support
+
+## Documentation Sections
+- [Commands](commands.md)
+- [Configuration](configuration.md)
+- Currencies
+  - [Creating Currencies](currencies/creating.md)
+  - [Managing Currencies](currencies/managing.md)
+  - [Physical Currencies](currencies/physical.md)
+- Developer API
+  - [Getting Started](api/getting-started.md)
+  - [Examples](api/examples.md)
 
 ## Quick Start
 1. Install the plugin

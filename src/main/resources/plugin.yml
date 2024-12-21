@@ -1,10 +1,10 @@
 name: PwingEco
-version: '${version}'
-main: com.pwing.pwingeco.PwingEco
+version: 1.0.1
+main: com.pwing.eco.PwingEco
 api-version: '1.20'
-authors: [YourName]
+authors: finder17
 description: A Minecraft economy plugin
-softdepend: [PlaceholderAPI]
+softdepend: [Skript, PlaceholderAPI]
 
 commands:
   currencyadmin:

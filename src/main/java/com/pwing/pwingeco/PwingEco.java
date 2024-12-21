@@ -2,6 +2,12 @@ package com.pwing.pwingeco;
 
 import com.pwing.pwingeco.config.CurrencyConfiguration;
 import com.pwing.pwingeco.manager.CurrencyManager;
+import com.pwing.pwingeco.manager.EconomyManager;
+import com.pwing.pwingeco.commands.admin.CurrencyAdminCommand;
+import com.pwing.pwingeco.commands.player.BalanceCommand;
+import com.pwing.pwingeco.commands.player.BalanceTopCommand;
+import com.pwing.pwingeco.commands.player.PayCommand;
+import com.pwing.pwingeco.placeholder.EconomyPlaceholders;
 import com.pwing.pwingeco.vault.VaultHook;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,11 +15,13 @@ public class PwingEco extends JavaPlugin {
     private CurrencyManager currencyManager;
     private CurrencyConfiguration currencyConfiguration;
     private VaultHook vaultHook;
+    private EconomyManager economyManager;
 
     @Override
     public void onEnable() {
         this.currencyManager = new CurrencyManager();
         this.currencyConfiguration = new CurrencyConfiguration(this);
+        this.economyManager = new EconomyManager();
         
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             this.vaultHook = new VaultHook(this);
@@ -25,6 +33,7 @@ public class PwingEco extends JavaPlugin {
             new EconomyPlaceholders(this).register();
             getLogger().info("PlaceholderAPI integration enabled!");
         }
+
         getCommand("currencyadmin").setExecutor(new CurrencyAdminCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
         getCommand("pay").setExecutor(new PayCommand(this));
@@ -46,5 +55,9 @@ public class PwingEco extends JavaPlugin {
 
     public CurrencyConfiguration getCurrencyConfiguration() {
         return currencyConfiguration;
+    }
+
+    public EconomyManager getEconomyManager() {
+        return economyManager;
     }
 }

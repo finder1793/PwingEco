@@ -3,7 +3,8 @@
 ## Adding PwingEco to Your Project
 
 ### Maven
-`xml
+```
+xml
 <repository>
     <id>pwing-repo</id>
     <url>https://repo.pwing.net/repository/maven-public/</url>
@@ -25,7 +26,8 @@ repositories {
 
 dependencies {
     compileOnly 'com.pwing:pwingeco:1.0.0'
-}`
+}
+```
 
 Basic Usage
 Getting the Plugin Instance

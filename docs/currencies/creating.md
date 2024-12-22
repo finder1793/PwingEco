@@ -2,14 +2,17 @@
 
 ## Using Commands
 Create currencies in-game using the admin command:
-```bash
-/currencyadmin create <name> <symbol> <primary>
 
-creating.md
+```
+/currencyadmin create <name> <symbol> <primary>
+```
+
 
 Example:
 
+```
 /currencyadmin create Gems ⛃ false
+```
 
 Physical Currency Setup
 
@@ -21,6 +24,7 @@ Configuration File
 
 You can also create currencies directly in the config.yml:
 
+```
 currencies:
   gems:
     name: "Gems"
@@ -38,6 +42,8 @@ currencies:
       - "Premium currency"
       - "Used for special items"
 
+
+```
 Currency Properties
 
     name: Display name shown in messages

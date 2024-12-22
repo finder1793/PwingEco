@@ -3,12 +3,15 @@ package com.pwing.pwingeco.skript;
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.ExpressionType;
 import com.pwing.pwingeco.PwingEco;
+import com.pwing.pwingeco.events.CurrencyIncreaseEvent;
+import com.pwing.pwingeco.events.CurrencyDecreaseEvent;
 import com.pwing.pwingeco.skript.expressions.ExprBalance;
 import com.pwing.pwingeco.skript.effects.EffectGiveMoney;
 import com.pwing.pwingeco.skript.effects.EffectTakeMoney;
 import com.pwing.pwingeco.skript.conditions.ConditionHasMoney;
 import com.pwing.pwingeco.skript.events.EvtCurrencyIncrease;
 import com.pwing.pwingeco.skript.events.EvtCurrencyDecrease;
+
 public class PwingEcoSkript {
     private final PwingEco pwingEco;
     

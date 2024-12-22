@@ -112,3 +112,34 @@ remove %number% [of] [pwingeco] %string% from %player%'s balance
     player has 75 of pwingeco coins
     pwingeco player has at least 1000 of pwingeco diamonds
 ```
+
+## Currency Events
+
+PwingEco provides events for tracking currency changes:
+
+### Skript Events
+Track currency increases and decreases:
+skript
+# Currency gained
+```
+on player gained 100 of coins:
+    broadcast "%player% received %number% %string%!"
+```
+
+# Currency spent
+```
+on pwingeco player spent 50 of gems:
+    send "Purchase complete!"
+```
+Event Patterns
+
+Currency Increase:
+
+```
+    [on] [pwingeco] %player% (gain[ed]|receiv(e|ed)) %number% [of] [pwingeco] %string%
+```
+
+Currency Decrease:
+```
+    [on] [pwingeco] %player% (lost|spent) %number% [of] [pwingeco] %string%
+```

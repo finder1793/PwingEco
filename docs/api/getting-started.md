@@ -12,7 +12,7 @@ xml
 
 <dependency>
     <groupId>com.pwing</groupId>
-    <artifactId>pwingeco</artifactId>
+    <artifactId>PwingEco</artifactId>
     <version>1.0.0</version>
     <scope>provided</scope>
 </dependency>

@@ -7,7 +7,8 @@ import com.pwing.pwingeco.skript.expressions.ExprBalance;
 import com.pwing.pwingeco.skript.effects.EffectGiveMoney;
 import com.pwing.pwingeco.skript.effects.EffectTakeMoney;
 import com.pwing.pwingeco.skript.conditions.ConditionHasMoney;
-
+import com.pwing.pwingeco.skript.events.EvtCurrencyIncrease;
+import com.pwing.pwingeco.skript.events.EvtCurrencyDecrease;
 public class PwingEcoSkript {
     private final PwingEco pwingEco;
     
@@ -29,6 +30,8 @@ public class PwingEcoSkript {
         Skript.registerEffect(EffectTakeMoney.class, "(take|remove) %number% %string% from %player%");
         Skript.registerCondition(ConditionHasMoney.class, "[pwingeco] %player% (has|have) [at least] %number% [of] [pwingeco] %string%");
         Skript.registerExpression(ExprBalance.class, Number.class, ExpressionType.PROPERTY);
+        Skript.registerEvent("currency increase", EvtCurrencyIncrease.class, CurrencyIncreaseEvent.class, "[on] [pwingeco] %player% (gain[ed]|receiv(e|ed)) %number% [of] [pwingeco] %string%");
+        Skript.registerEvent("currency decrease", EvtCurrencyDecrease.class, CurrencyDecreaseEvent.class, "[on] [pwingeco] %player% (lost|spent) %number% [of] [pwingeco] %string%");
     }
     
     private boolean isSkriptInstalled() {

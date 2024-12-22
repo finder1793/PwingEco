@@ -29,10 +29,11 @@ public void createCustomCurrency(PwingEco pwingEco) {
     // Register currency
     pwingEco.getCurrencyManager().registerCurrency(currency);
 }
+```
 
-examples.md
 World-Specific Currency Handler
 
+```
 public class WorldCurrencyHandler implements Listener {
     private final PwingEco plugin;
     private final Currency currency;
@@ -52,9 +53,11 @@ public class WorldCurrencyHandler implements Listener {
         }
     }
 }
+```
 
 Balance Management System
 
+```
 public class BalanceManager {
     private final PwingEco plugin;
 
@@ -77,9 +80,11 @@ public class BalanceManager {
         return false;
     }
 }
+```
 
 Custom Shop Implementation
 
+```
 public class CustomShop implements Listener {
     private final PwingEco plugin;
     private final Currency shopCurrency;
@@ -104,6 +109,8 @@ public class CustomShop implements Listener {
         }
     }
 }
+```
+
 //Skript integration
 command /balance [<text>]:
     trigger:

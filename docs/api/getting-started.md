@@ -3,7 +3,8 @@
 ## Adding PwingEco to Your Project
 
 ### Maven
-```xml
+```
+xml
 <repository>
     <id>pwing-repo</id>
     <url>https://repo.pwing.net/repository/maven-public/</url>
@@ -11,12 +12,12 @@
 
 <dependency>
     <groupId>com.pwing</groupId>
-    <artifactId>pwingeco</artifactId>
+    <artifactId>PwingEco</artifactId>
     <version>1.0.0</version>
     <scope>provided</scope>
 </dependency>
 
-getting-started.md
+
 Gradle
 
 repositories {
@@ -26,6 +27,7 @@ repositories {
 dependencies {
     compileOnly 'com.pwing:pwingeco:1.0.0'
 }
+```
 
 Basic Usage
 Getting the Plugin Instance
@@ -76,16 +78,12 @@ economyManager.withdraw(player.getUniqueId(), currency, amount);
 
 PwingEco provides native Skript support for easy scripting. Available syntaxes:
 
-# skript
-## Get player balance
-
+# Get player balance
 ```
 [pwingeco] balance of %player% [in %string%]
 %player%'s [pwingeco] balance [in %string%]
 ```
-
 # Give/add money
-
 ```
 give %number% [of] [pwingeco] %string% to %player%
 add %number% [of] [pwingeco] %string% to %player%'s balance

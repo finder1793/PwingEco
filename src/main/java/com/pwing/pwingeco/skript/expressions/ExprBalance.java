@@ -1,45 +1,32 @@
 package com.pwing.pwingeco.skript.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import com.pwing.pwingeco.PwingEco;
-import com.pwing.pwingeco.config.CurrencyConfiguration;
 
 public class ExprBalance extends SimpleExpression<Number> {
-    
     private static PwingEco pwingEco;
     
-    static {
-        Skript.registerExpression(ExprBalance.class, Number.class, ExpressionType.PROPERTY,
-                "[pwingeco] balance of %player% [in %string%]",
-                "%player%'s [pwingeco] balance [in %string%]");
+    public static void setPwingEco(PwingEco plugin) {
+        pwingEco = plugin;
     }
     
     private Expression<Player> player;
     private Expression<String> currency;
 
-    public static void setPwingEco(PwingEco plugin) {
-        pwingEco = plugin;
-    }
-    
     @Override
-    public Number[] get(Event e) {
-        Player p = player.getSingle(e);
-        String curr = currency != null ? currency.getSingle(e) : null;
-        
-        if (p == null) return null;
-        
-        var currencyObj = curr != null ? 
-            pwingEco.getCurrencyManager().getCurrency(curr).orElse(pwingEco.getCurrencyManager().getPrimaryCurrency()) :
-            pwingEco.getCurrencyManager().getPrimaryCurrency();
-            
-        return new Number[] {pwingEco.getEconomyManager().getBalance(p.getUniqueId(), currencyObj)};
+    protected Number[] get(Event event) {
+        Player p = player.getSingle(event);
+        String curr = currency.getSingle(event);
+        if (p != null && curr != null) {
+            return new Number[]{pwingEco.getEconomyManager().getBalance(p.getUniqueId(), 
+                pwingEco.getCurrencyManager().getCurrency(curr).get())};
+        }
+        return new Number[0];
     }
 
     @Override
@@ -53,15 +40,14 @@ public class ExprBalance extends SimpleExpression<Number> {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
-        return "balance of " + player.toString(e, debug);
+    public String toString(Event event, boolean debug) {
+        return "balance expression";
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
         player = (Expression<Player>) exprs[0];
-        currency = exprs.length > 1 ? (Expression<String>) exprs[1] : null;
+        currency = (Expression<String>) exprs[1];
         return true;
     }
 }

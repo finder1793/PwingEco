@@ -25,7 +25,7 @@ public class PwingEcoSkript {
         EffectTakeMoney.setPwingEco(pwingEco);
         ConditionHasMoney.setPwingEco(pwingEco);
         
-        Skript.registerEffect(EffectGiveMoney.class, "(give|add) %number% %string% to %player%");
+        Skript.registerEffect(EffectGiveMoney.class, "give %number% %string% to %player%");
         Skript.registerEffect(EffectTakeMoney.class, "(take|remove) %number% %string% from %player%");
         Skript.registerCondition(ConditionHasMoney.class, "[pwingeco] %player% (has|have) [at least] %number% [of] [pwingeco] %string%");
         Skript.registerExpression(ExprBalance.class, Number.class, ExpressionType.PROPERTY);
@@ -34,3 +34,4 @@ public class PwingEcoSkript {
     private boolean isSkriptInstalled() {
         return pwingEco.getServer().getPluginManager().getPlugin("Skript") != null;
     }
+}

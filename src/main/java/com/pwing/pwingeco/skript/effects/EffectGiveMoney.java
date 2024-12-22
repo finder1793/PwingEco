@@ -1,6 +1,5 @@
 package com.pwing.pwingeco.skript.effects;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -22,7 +21,15 @@ public class EffectGiveMoney extends Effect {
 
     @Override
     protected void execute(Event event) {
-        // Implementation
+        Number amountValue = amount.getSingle(event);
+        String currencyName = currency.getSingle(event);
+        Player targetPlayer = player.getSingle(event);
+        
+        if (amountValue != null && currencyName != null && targetPlayer != null) {
+            pwingEco.getCurrencyManager().getCurrency(currencyName).ifPresent(curr -> 
+                pwingEco.getEconomyManager().depositPlayer(targetPlayer.getUniqueId(), curr, amountValue.doubleValue())
+            );
+        }
     }
 
     @Override

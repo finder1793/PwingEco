@@ -2,6 +2,7 @@
 # Configuration
 
 ## Main Configuration (config.yml)
+```
 storage:
   type: YAML  # YAML or MySQL
   mysql:
@@ -11,7 +12,7 @@ storage:
     username: root
     password: password
     pool-size: 10
-
+```
 ### Currency Settings
 ```yaml
 currencies:
@@ -30,3 +31,4 @@ currencies:
     description:
       - "The primary currency"
       - "Used throughout the server"
+```

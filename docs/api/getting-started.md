@@ -72,7 +72,75 @@ economyManager.deposit(player.getUniqueId(), currency, amount);
 
 // Remove funds
 economyManager.withdraw(player.getUniqueId(), currency, amount);
+## Shop Integration
 
+### Getting the Shop API
+```
+ShopIntegrationAPI shopAPI = pwingEco.getShopIntegrationAPI();
+```
+
+Processing Transactions
+```
+// Handle a purchase
+boolean purchaseSuccess = shopAPI.processPurchase(player, "Gems", 500.0);
+if (purchaseSuccess) {
+    // Purchase successful
+}
+```
+
+```
+// Handle a sale
+boolean saleSuccess = shopAPI.processSale(player, "Coins", 100.0);
+if (saleSuccess) {
+    // Sale successful
+}
+```
+
+Balance Operations
+
+```
+// Check if player can afford purchase
+double balance = shopAPI.getCurrencyBalance(player.getUniqueId(), "Diamonds");
+if (balance >= cost) {
+    // Proceed with transaction
+}
+```
+
+Transaction Best Practices
+Currency Validation
+
+Always verify currency existence before transactions:
+
+```
+Optional<Currency> currency = pwingEco.getCurrencyManager().getCurrency("Gems");
+if (currency.isPresent()) {
+    // Safe to proceed
+}
+```
+Error Handling
+
+```
+try {
+    boolean success = shopAPI.processPurchase(player, "Gems", amount);
+    if (!success) {
+        // Handle failed transaction
+    }
+} catch (Exception e) {
+    // Handle unexpected errors
+}
+```
+Multi-Currency Support
+
+```
+// Example handling multiple currencies in a shop
+for (String currencyName : shop.getAcceptedCurrencies()) {
+    double price = shop.getPrice(currencyName);
+    if (shopAPI.getCurrencyBalance(player.getUniqueId(), currencyName) >= price) {
+        // Process with this currency
+        break;
+    }
+}
+```
 
 ## Skript Integration
 

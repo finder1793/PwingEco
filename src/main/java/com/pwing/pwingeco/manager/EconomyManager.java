@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Optional;
 
 public class EconomyManager {
     private final PwingEco plugin;
@@ -79,5 +80,34 @@ public class EconomyManager {
 
     public Map<UUID, Double> getAllBalances(Currency currency) {
         return balances.getOrDefault(currency.getName(), new HashMap<>());
+    }
+
+
+    public boolean withdrawBalance(UUID playerUUID, String currencyName, double amount) {
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
+        if (!currencyOpt.isPresent() || !has(playerUUID, currencyOpt.get(), amount)) {
+            return false;
+        }
+        
+        withdrawPlayer(playerUUID, currencyOpt.get(), amount);
+        savePlayerData(playerUUID);
+        return true;
+    }
+
+    public boolean depositBalance(UUID playerUUID, String currencyName, double amount) {
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
+        if (!currencyOpt.isPresent() || amount < 0) {
+            return false;
+        }
+        
+        depositPlayer(playerUUID, currencyOpt.get(), amount);
+        savePlayerData(playerUUID);
+        return true;
+    }
+
+    public double getBalance(UUID playerUUID, String currencyName) {
+        Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
+        return currencyOpt.map(currency -> getBalance(playerUUID, currency))
+                          .orElse(0.0);
     }
 }

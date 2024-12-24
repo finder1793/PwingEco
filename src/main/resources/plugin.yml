@@ -2,7 +2,8 @@ name: PwingEco
 version: 1.1.2
 main: com.pwing.eco.PwingEco
 api-version: '1.20'
-authors: finder17
+authors:
+  - finder17
 description: A Minecraft economy plugin
 depend: [Vault]
 softdepend: [Skript, PlaceholderAPI]

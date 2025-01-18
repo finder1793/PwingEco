@@ -8,7 +8,6 @@ storage:
     password: password
     pool-size: 10
 
-
 currencies:
   dollars:
     symbol: "$"
@@ -21,4 +20,38 @@ currencies:
     enabled-worlds:
       - "world_rpg"
       - "world_mining"
+  gold:
+    symbol: "G"
+    primary: false
+    global: true
+    item-based: true
+    max-stack-size: 64
+    item-representation:
+      material: GOLD_INGOT
+      display-name: "Gold Ingot"
+      lore:
+        - "A valuable gold ingot"
+    next-tier:
+      material: GOLD_BLOCK
+      display-name: "Gold Block"
+      lore:
+        - "A block of gold"
+      combine-amount: 9
+  diamonds:
+    symbol: "D"
+    primary: false
+    global: true
+    item-based: true
+    max-stack-size: 64
+    item-representation:
+      material: DIAMOND
+      display-name: "Diamond"
+      lore:
+        - "A precious diamond"
+    next-tier:
+      material: DIAMOND_BLOCK
+      display-name: "Diamond Block"
+      lore:
+        - "A block of diamonds"
+      combine-amount: 9
 

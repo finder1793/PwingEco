@@ -65,3 +65,4 @@ Thumbs.db
 .gradle/8.8/fileHashes/fileHashes.bin
 .gradle/8.8/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/caches/

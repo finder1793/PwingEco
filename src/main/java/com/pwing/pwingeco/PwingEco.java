@@ -12,6 +12,12 @@ import com.pwing.pwingeco.vault.VaultHook;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.pwing.pwingeco.listeners.PlayerDataListener;
 import com.pwing.pwingeco.skript.PwingEcoSkript;
+import com.pwing.pwingeco.commands.admin.ReloadCommand;
+import com.pwing.pwingeco.commands.admin.SaveCommand;
+import com.pwing.pwingeco.commands.player.DepositItemsCommand;
+import com.pwing.pwingeco.commands.player.WithdrawItemsCommand;
+import java.io.File;
+import java.io.IOException;
 
 public class PwingEco extends JavaPlugin {
     private CurrencyManager currencyManager;
@@ -25,6 +31,7 @@ public class PwingEco extends JavaPlugin {
         this.currencyConfiguration = new CurrencyConfiguration(this);
         this.economyManager = new EconomyManager(this);
 
+        loadConfiguration();
         
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             this.vaultHook = new VaultHook(this);
@@ -40,10 +47,7 @@ public class PwingEco extends JavaPlugin {
             new PwingEcoSkript(this).register();
             getLogger().info("Skript integration enabled!");
         }
-        getCommand("currencyadmin").setExecutor(new CurrencyAdminCommand(this));
-        getCommand("balance").setExecutor(new BalanceCommand(this));
-        getCommand("pay").setExecutor(new PayCommand(this));
-        getCommand("balancetop").setExecutor(new BalanceTopCommand(this));
+        registerCommands();
         getLogger().info("PwingEco has been enabled!");
         getServer().getPluginManager().registerEvents(new PlayerDataListener(this), this);
 
@@ -54,6 +58,7 @@ public class PwingEco extends JavaPlugin {
         if (vaultHook != null) {
             vaultHook.unhook();
         }
+        saveConfiguration();
         getLogger().info("PwingEco has been disabled!");
     }
     
@@ -67,5 +72,47 @@ public class PwingEco extends JavaPlugin {
 
     public EconomyManager getEconomyManager() {
         return economyManager;
+    }
+
+    private void loadConfiguration() {
+        try {
+            File configFile = new File(getDataFolder(), "config.yml");
+            if (!configFile.exists()) {
+                getDataFolder().mkdirs();
+                saveDefaultConfig();
+            }
+            getLogger().info("Configuration loaded successfully.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to load configuration: " + e.getMessage());
+        }
+    }
+
+    public void saveConfiguration() {
+        try {
+            saveConfig();
+            getLogger().info("Configuration saved successfully.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to save configuration: " + e.getMessage());
+        }
+    }
+
+    private void registerCommands() {
+        getCommand("currencyadmin").setExecutor(new CurrencyAdminCommand(this));
+        getCommand("balance").setExecutor(new BalanceCommand(this));
+        getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("balancetop").setExecutor(new BalanceTopCommand(this));
+        getCommand("pwingeco").setExecutor(new ReloadCommand(this));
+        getCommand("pwingecosave").setExecutor(new SaveCommand(this));
+        getCommand("deposititems").setExecutor(new DepositItemsCommand(this));
+        getCommand("withdrawitems").setExecutor(new WithdrawItemsCommand(this));
+    }
+
+    public void reloadConfiguration() {
+        try {
+            reloadConfig();
+            getLogger().info("Configuration reloaded successfully.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to reload configuration: " + e.getMessage());
+        }
     }
 }

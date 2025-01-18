@@ -24,7 +24,27 @@ commands:
     description: View top balances
     aliases: [baltop]
     usage: /<command> [currency]
+  pwingeco:
+    description: Reload the PwingEco plugin configuration
+    usage: /<command> reload
+    permission: admin.pwingeco.reload
+  pwingecosave:
+    description: Save the PwingEco plugin configuration
+    usage: /<command> save
+    permission: admin.pwingeco.save
+  deposititems:
+    description: Deposit items as currency
+    usage: /<command> <amount> <currency>
+  withdrawitems:
+    description: Withdraw items as currency
+    usage: /<command> <amount> <currency>
 permissions:
   admin.pwing.currency:
     description: Allows access to currency admin commands
+    default: op
+  admin.pwingeco.reload:
+    description: Allows reloading of the PwingEco plugin configuration
+    default: op
+  admin.pwingeco.save:
+    description: Allows saving of the PwingEco plugin configuration
     default: op

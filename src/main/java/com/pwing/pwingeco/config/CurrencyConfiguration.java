@@ -37,7 +37,15 @@ public class CurrencyConfiguration {
             ConfigurationSection itemSection = currencySection.getConfigurationSection("item-representation");
             ItemStack itemStack = createItemRepresentation(itemSection);
 
-            Currency currency = new Currency(name, symbol, primary, itemStack, true, new ArrayList<>());
+            boolean itemBased = currencySection.getBoolean("item-based", false);
+            int maxStackSize = currencySection.getInt("max-stack-size", 64);
+
+            // Create next tier item representation
+            ConfigurationSection nextTierSection = currencySection.getConfigurationSection("next-tier");
+            ItemStack nextTierItem = createItemRepresentation(nextTierSection);
+            int combineAmount = nextTierSection != null ? nextTierSection.getInt("combine-amount", 0) : 0;
+
+            Currency currency = new Currency(name, symbol, primary, itemStack, true, new ArrayList<>(), itemBased, maxStackSize, nextTierItem, combineAmount);
             plugin.getCurrencyManager().registerCurrency(currency);
         }
     }

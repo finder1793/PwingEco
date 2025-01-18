@@ -6,6 +6,7 @@ import com.pwing.pwingeco.storage.MySQLStorage;
 import com.pwing.pwingeco.storage.YAMLStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,5 +110,61 @@ public class EconomyManager {
         Optional<Currency> currencyOpt = plugin.getCurrencyManager().getCurrency(currencyName);
         return currencyOpt.map(currency -> getBalance(playerUUID, currency))
                           .orElse(0.0);
+    }
+
+    public boolean depositItems(Player player, Currency currency, int amount) {
+        if (!currency.isItemBased()) return false;
+        ItemStack item = currency.getItemRepresentation();
+        item.setAmount(amount);
+        player.getInventory().addItem(item);
+        return true;
+    }
+
+    public boolean withdrawItems(Player player, Currency currency, int amount) {
+        if (!currency.isItemBased()) return false;
+        ItemStack item = currency.getItemRepresentation();
+        item.setAmount(amount);
+        if (player.getInventory().containsAtLeast(item, amount)) {
+            player.getInventory().removeItem(item);
+            return true;
+        }
+        return false;
+    }
+
+    public void autoCombineItems(Player player, Currency currency) {
+        if (!currency.isItemBased()) return;
+        ItemStack item = currency.getItemRepresentation();
+        int totalAmount = 0;
+        for (ItemStack invItem : player.getInventory().getContents()) {
+            if (invItem != null && invItem.isSimilar(item)) {
+                totalAmount += invItem.getAmount();
+                player.getInventory().remove(invItem);
+            }
+        }
+        while (totalAmount > 0) {
+            int stackSize = Math.min(totalAmount, currency.getMaxStackSize());
+            item.setAmount(stackSize);
+            player.getInventory().addItem(item);
+            totalAmount -= stackSize;
+        }
+        combineToNextTier(player, currency, totalAmount);
+    }
+
+    private void combineToNextTier(Player player, Currency currency, int totalAmount) {
+        if (currency.getNextTierItem() == null || currency.getCombineAmount() <= 0) return;
+        int nextTierAmount = totalAmount / currency.getCombineAmount();
+        int remainingAmount = totalAmount % currency.getCombineAmount();
+        ItemStack nextTierItem = currency.getNextTierItem();
+        while (nextTierAmount > 0) {
+            int stackSize = Math.min(nextTierAmount, nextTierItem.getMaxStackSize());
+            nextTierItem.setAmount(stackSize);
+            player.getInventory().addItem(nextTierItem);
+            nextTierAmount -= stackSize;
+        }
+        if (remainingAmount > 0) {
+            ItemStack item = currency.getItemRepresentation();
+            item.setAmount(remainingAmount);
+            player.getInventory().addItem(item);
+        }
     }
 }

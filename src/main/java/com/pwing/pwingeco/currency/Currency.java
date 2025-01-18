@@ -13,8 +13,12 @@ public class Currency {
     private final List<String> description;
     private final boolean global;
     private final List<String> enabledWorlds;
+    private final boolean itemBased;
+    private final int maxStackSize;
+    private final ItemStack nextTierItem;
+    private final int combineAmount;
 
-    public Currency(String name, String symbol, boolean primary, ItemStack itemRepresentation, boolean tradeable, List<String> description) {
+    public Currency(String name, String symbol, boolean primary, ItemStack itemRepresentation, boolean tradeable, List<String> description, boolean itemBased, int maxStackSize, ItemStack nextTierItem, int combineAmount) {
         this.name = name;
         this.symbol = symbol;
         this.primary = primary;
@@ -23,6 +27,10 @@ public class Currency {
         this.description = description;
         this.global = true;
         this.enabledWorlds = new ArrayList<>();
+        this.itemBased = itemBased;
+        this.maxStackSize = maxStackSize;
+        this.nextTierItem = nextTierItem;
+        this.combineAmount = combineAmount;
     }
 
     public String getName() {
@@ -59,5 +67,21 @@ public class Currency {
 
     public boolean isEnabledInWorld(String worldName) {
         return global || enabledWorlds.contains(worldName);
+    }
+
+    public boolean isItemBased() {
+        return itemBased;
+    }
+
+    public int getMaxStackSize() {
+        return maxStackSize;
+    }
+
+    public ItemStack getNextTierItem() {
+        return nextTierItem != null ? nextTierItem.clone() : null;
+    }
+
+    public int getCombineAmount() {
+        return combineAmount;
     }
 }

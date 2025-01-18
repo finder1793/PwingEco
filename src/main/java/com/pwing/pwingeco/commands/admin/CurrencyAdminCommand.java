@@ -82,7 +82,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             return;
         }
 
-        Currency currency = new Currency(name, symbol, primary, null, true, new ArrayList<>());
+        Currency currency = new Currency(name, symbol, primary, null, true, new ArrayList<>(), false, 0, null, 0);
         plugin.getCurrencyManager().registerCurrency(currency);
         plugin.getCurrencyConfiguration().saveCurrency(currency);
         sender.sendMessage(ChatColor.GREEN + "Created new currency: " + name);
@@ -109,7 +109,11 @@ public class CurrencyAdminCommand implements CommandExecutor {
             currency.isPrimary(),
             hand.clone(),
             true,
-            new ArrayList<>()
+            new ArrayList<>(),
+            false,
+            0,
+            null,
+            0
         );
 
         plugin.getCurrencyManager().registerCurrency(updatedCurrency);

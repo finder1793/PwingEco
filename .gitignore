@@ -1,4 +1,4 @@
-# Gradle
+# Gradle files
 .gradle/
 build/
 gradle-app.setting
@@ -16,10 +16,25 @@ out/
 .classpath
 .project
 .settings/
+.c9/
 bin/
 
 # IDE - VSCode
 .vscode/
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
 
 # Compiled files
 *.class
